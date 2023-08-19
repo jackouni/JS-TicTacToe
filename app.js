@@ -1,28 +1,32 @@
-const gamePlay = (function(){
-
+const gamePlay = (function(){ // Controls the flow of events and stores the state of the game.
+    let board = [
+        ['X', 'Y', 'O'],
+        ['O', 'X', 'O'],
+        ['Y', 'X', 'X']
+    ] ;
+    return { board }
 })() ;
 
-const gameBoard = (function(){
-    let currentBoard = [
-        ['X', 'O', 'O'],
-        ['', 'X', 'X'],
-        ['X', '', 'O']
-    ] ;
+const gameLogic = (function() { // Performs the logic necessary to make changes to the game.
+
+})() ; 
+
+const gameBoard = (function(){ // Controls the elements and display rendering of the board.
 
     function render() {
         let board = document.getElementById('board') ;
         document.querySelectorAll('.board-tile').forEach(tile => tile.remove());
 
-        for (let row = 0 ; row < currentBoard.length ; row++ ) {
-            for (let column = 0 ; column < currentBoard[row].length ; column++) {
+        for (let row = 0 ; row < gamePlay.board.length ; row++ ) {
+            for (let column = 0 ; column < gamePlay.board[row].length ; column++) {
                 let boardTile = document.createElement('div') ;
                 boardTile.className = 'board-tile'
-                boardTile.innerText = currentBoard[row][column] ; 
+                boardTile.innerText = gamePlay.board[row][column] ; 
                 board.appendChild(boardTile)
             }
         }
     }
-    return { currentBoard, render } ;
+    return { render } ;
 })() ;
 
 const PlayerFactory = function(name, marker) {
@@ -31,5 +35,6 @@ const PlayerFactory = function(name, marker) {
 
     return { getName, getMarker } ;
 }
+
 
 
