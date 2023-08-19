@@ -4,12 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
-    <script src="app.js"></script>
+    <script src="app.js" defer></script>
     <title>Document</title>
 </head>
 <body>
     <header>
+        <form id="form" action="">
+            <div id="name-container">
+                <label for="name" >Enter your name:</label>
+                <input type="text" id="name" required>
+            </div>
 
+            <div id="marker-container">
+                <h2>Choose your marker:</h2>
+                <div id="marker-options">
+                    <label for="marker-x">X
+                        <input type="radio" id="marker-x" name="marker" value="X" required>
+                    </label>
+                    <label for="marker-o">O
+                        <input type="radio" id="marker-o" name="marker" value="O">
+                    </label>
+                </div>
+            </div>
+            <button id="submit-btn" type="submit">SUBMIT</button>
+        </form>
     </header>
 
     <main>

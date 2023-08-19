@@ -59,13 +59,13 @@ body {
     align-items: center;
     width: 100vw ; 
     height: 100vh ; 
-    outline: solid black 4px
 }
 
 header {
+    display: flex;
+    justify-content: center;
     width: 100% ;
     height: 15%;
-    outline: solid blue 4px;
 }
 
 main {
@@ -73,13 +73,11 @@ main {
     justify-content: center;
     width: 100% ;
     height: 70%;
-    outline: solid purple 4px;
 }
 
 footer {
     width: 100% ;
     height: 15%;
-    outline: solid rgb(0, 255, 234) 4px;
 }
 
 
@@ -88,7 +86,22 @@ footer {
   /*---------------------*/
  /*----- HEADER --------*/
 /*---------------------*/
+form {
+    display: flex;
+    justify-content: space-evenly;
 
+    width: 100%;
+    height: 100%;
+}
+#marker-container {
+    display: flex;
+    flex-direction: column;
+}
+
+#marker-options {
+    display: flex;
+    justify-content: space-evenly;
+}
 
 
 
