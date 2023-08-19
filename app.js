@@ -1,6 +1,7 @@
 const gamePlay = (function(){ // Controls the flow of events and stores the state of the game.
 
-    let roundCount = 1 ; // What round is the game on?
+    let _turnCount = 1 ; // What turn is the round on?
+    let _roundCount = 1 ; // What round is the game on?
 
     let board = [
         ['', '', ''],
@@ -10,7 +11,7 @@ const gamePlay = (function(){ // Controls the flow of events and stores the stat
 
     let players = [] ; 
 
-    return { board, players, roundCount }
+    return { board, players, _turnCount }
 })() ;
 
 const gameLogic = (function() { // Performs the logic necessary to make changes to the game.
@@ -22,15 +23,6 @@ const gameLogic = (function() { // Performs the logic necessary to make changes 
         return { getName, getMarker } ;
     }
 
-    function whosTurnIsIt() {
-        let playerTurn = null
-
-        gamePlay.roundCount % 2 === 0 ? playerTurn = gamePlay.players[1] : playerTurn = gamePlay.players[0] ;
-
-        gamePlay.roundCount++
-        return playerTurn
-    }
-    
     function createPlayer() {
         if (gamePlay.players.length < 2) { // Makes sure we don't create more then 2 players
             let name = document.getElementById('name').value;
@@ -42,36 +34,47 @@ const gameLogic = (function() { // Performs the logic necessary to make changes 
             if (gamePlay.players.length === 1) { // Re-renders the form for player 2 (1st marker taken = no more options)
                 // re-renderForm() for player 2
                 console.log('re-rendering form')
-            } else { console.log('removing form')// removes form entirely and commences the game
+            } else { console.log('removing form') // removes form entirely and commences the game
             }
 
         } else console.log('error')
     }
 
+    function whosTurnIsIt() {
+        let playerTurn = null
 
+        gamePlay._turnCount % 2 === 0 ? playerTurn = gamePlay.players[1] : playerTurn = gamePlay.players[0] ;
 
-    return { createPlayer, whosTurnIsIt }
+        gamePlay._turnCount++
+        return playerTurn
+    }
+
+    function evaluateWin() {
+
+    }
+
+    return { createPlayer, whosTurnIsIt, evaluateWin }
 })() ; 
 
 const gameDisplay = (function(){ // Controls the elements and rendering of the game in browser.
 
     function renderBoard() {
         let board = document.getElementById('board') ;
-        document.querySelectorAll('.board-tile').forEach(tile => tile.remove());
+        document.querySelectorAll('.board-tile').forEach(tile => tile.remove()) ;
 
         for (let row = 0 ; row < gamePlay.board.length ; row++ ) {
             for (let column = 0 ; column < gamePlay.board[row].length ; column++) {
                 let boardTile = document.createElement('div') ;
-                boardTile.className = 'board-tile'
+                boardTile.className = 'board-tile' ;
                 boardTile.innerText = gamePlay.board[row][column] ; 
 
                 boardTile.addEventListener('click', function(event) {
                     if (event.target.innerText === '') {
                         event.target.innerText = gameLogic.whosTurnIsIt().getMarker()
                     }
-                })
+                }) ;
 
-                board.appendChild(boardTile)
+                board.appendChild(boardTile) ;
             }
         }
     }
