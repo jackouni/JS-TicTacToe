@@ -1,13 +1,16 @@
 const gamePlay = (function(){ // Controls the flow of events and stores the state of the game.
+
+    let roundCount = 1 ; // What round is the game on?
+
     let board = [
-        ['X', 'Y', 'O'],
-        ['O', 'X', 'O'],
-        ['Y', 'X', 'X']
+        ['', '', ''],
+        ['', '', ''],
+        ['', '', '']
     ] ;
 
     let players = [] ; 
 
-    return { board, players }
+    return { board, players, roundCount }
 })() ;
 
 const gameLogic = (function() { // Performs the logic necessary to make changes to the game.
@@ -17,6 +20,15 @@ const gameLogic = (function() { // Performs the logic necessary to make changes 
         function getMarker() { return marker } ;
     
         return { getName, getMarker } ;
+    }
+
+    function whosTurnIsIt() {
+        let playerTurn = null
+
+        gamePlay.roundCount % 2 === 0 ? playerTurn = gamePlay.players[1] : playerTurn = gamePlay.players[0] ;
+
+        gamePlay.roundCount++
+        return playerTurn
     }
     
     function createPlayer() {
@@ -36,7 +48,9 @@ const gameLogic = (function() { // Performs the logic necessary to make changes 
         } else console.log('error')
     }
 
-    return { createPlayer }
+
+
+    return { createPlayer, whosTurnIsIt }
 })() ; 
 
 const gameDisplay = (function(){ // Controls the elements and rendering of the game in browser.
@@ -50,6 +64,13 @@ const gameDisplay = (function(){ // Controls the elements and rendering of the g
                 let boardTile = document.createElement('div') ;
                 boardTile.className = 'board-tile'
                 boardTile.innerText = gamePlay.board[row][column] ; 
+
+                boardTile.addEventListener('click', function(event) {
+                    if (event.target.innerText === '') {
+                        event.target.innerText = gameLogic.whosTurnIsIt().getMarker()
+                    }
+                })
+
                 board.appendChild(boardTile)
             }
         }
