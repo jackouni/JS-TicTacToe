@@ -1,7 +1,7 @@
 const gamePlay = (function(){ // Stores the current state of the game.
 
-    let _turnCount = 0 ; // How many turns have been taken?
-    let _roundCount = 1 ; // What round is the game on?
+    let _turnCount = 0 ; // How many turns have been taken in current round?
+    let _roundCount = 0 ; // How many rounds have been played in current game?
 
     let board = [
         ['', '', ''],
@@ -17,7 +17,10 @@ const gamePlay = (function(){ // Stores the current state of the game.
         console.log(`to 👉 ${_turnCount}`)
     }
     function roundCountIncrement() {
-        _roundCount++
+        console.log(`Round count incremented from 👉 ${_roundCount}` )
+        _roundCount += 1
+        console.log(`to 👉 ${_roundCount}`)
+        console.log('New round started...')
     }
     function getTurnCount() {
         return _turnCount
@@ -45,8 +48,15 @@ const gamePlay = (function(){ // Stores the current state of the game.
         board[row][column] = `${marker}`
     }
 
+    function newGame() {
+        console.log('gamePlay.newGame() invoked')
+        players = [] ; 
+        _roundCount = 1 ;
+        newRound() ; 
+    }
+
     return { 
-        board, getBoard, players, newRound, changeBoard,
+        board, getBoard, players, newRound, changeBoard, newGame,
         getTurnCount, getRoundCount, roundCountIncrement, turnCountIncrement
     }
 })() ;
@@ -60,7 +70,7 @@ const gameLogic = (function() { // Performs the logic necessary to make changes 
         function getName() { return name } ; 
         function getMarker() { return marker } ;
         function getWins() { return wins }
-        function incrementWins() { wins++ }
+        function incrementWins() { wins += 1 }
     
         return { getName, getMarker, getWins, incrementWins } ;
     }
@@ -69,24 +79,46 @@ const gameLogic = (function() { // Performs the logic necessary to make changes 
         if (gamePlay.players.length < 2) { // Makes sure we don't create more then 2 players
             let name = document.getElementById('name').value;
             let marker = document.querySelector('input[name="marker"]:checked').value;
-            let player = _Player(name, marker) ; 
-            gamePlay.players.push(player)
+            let newPlayer = _Player(name, marker) ; 
+            gamePlay.players.push(newPlayer)
             console.log('new player created')
 
             if (gamePlay.players.length === 1) { // Re-renders the form for player 2 (1st marker taken = no more options)
                 // re-renderForm() for player 2
                 console.log('re-rendering form')
-            } else { console.log('removing form') // removes form entirely and commences the game
+            } else {
+                console.log('removing form') // removes form entirely and commences the game
             }
 
         } else console.log('error')
     }
 
-    function whosTurnItIs() {
+    function whosTurnItIs() { // Logic to figure out which player's turn it is. Alternates who goes first by round
         let playerTurn = null
+        if (gamePlay.getRoundCount() === 1 || gamePlay.getRoundCount() === 3) {
+            gamePlay.getTurnCount() % 2 === 0 ? playerTurn = gamePlay.players[1] : playerTurn = gamePlay.players[0] ;
+            return playerTurn
+        } else {
+            gamePlay.getTurnCount() % 2 === 0 ? playerTurn = gamePlay.players[0] : playerTurn = gamePlay.players[1] ;
+            return playerTurn
+        }
 
-        gamePlay.getTurnCount() % 2 === 0 ? playerTurn = gamePlay.players[1] : playerTurn = gamePlay.players[0] ;
-        return playerTurn
+    }
+
+    function evaluateGameWin() {
+        console.log('evaluateGameWin() invoked')
+        if (gamePlay.getRoundCount() === 3 || gamePlay.players[0].getWins() === 2 || gamePlay.players[1].getWins() === 2) {            
+            if (gamePlay.players[0].getWins() > gamePlay.players[1].getWins()) {
+                console.log("Player 1 wins the game!")
+                gamePlay.newGame()
+            } else if (gamePlay.players[0].getWins() < gamePlay.players[1].getWins()) {
+                console.log("Player 2 wins the game!")
+                gamePlay.newGame()
+            } else {
+                console.log("Tie Game... No on wins, no one loses.")
+                gamePlay.newGame()
+            }
+        }
     }
 
     function evaluateRoundWin() {
@@ -108,11 +140,15 @@ const gameLogic = (function() { // Performs the logic necessary to make changes 
                 console.log('Player X wins the round') ;
                 whosTurnItIs().incrementWins()
                 gamePlay.newRound()
+                gamePlay.roundCountIncrement()
+                evaluateGameWin()
                 return;
             } else if (getWinningPositions()[i].join() === ["O", "O", "O"].join()) {
                 console.log('Player O wins the round') ;
                 whosTurnItIs().incrementWins()
                 gamePlay.newRound()
+                gamePlay.roundCountIncrement()
+                evaluateGameWin()
                 return;
             }
         }
@@ -120,11 +156,13 @@ const gameLogic = (function() { // Performs the logic necessary to make changes 
         if (gamePlay.getTurnCount() === 9) {
             console.log('tie game')
             gamePlay.newRound()
+            gamePlay.roundCountIncrement()
+            evaluateGameWin()
             return; 
          }
     }
 
-    return { createPlayer, whosTurnItIs, evaluateRoundWin  }
+    return { createPlayer, whosTurnItIs, evaluateRoundWin }
 })() ; 
 
 
