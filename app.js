@@ -141,6 +141,7 @@ const gameLogic = (function() { // Performs the logic necessary to make changes 
                 whosTurnItIs().incrementWins()
                 gamePlay.newRound()
                 gamePlay.roundCountIncrement()
+                gameDisplay.renderScoreCounter()
                 evaluateGameWin()
                 return;
             } else if (getWinningPositions()[i].join() === ["O", "O", "O"].join()) {
@@ -148,7 +149,9 @@ const gameLogic = (function() { // Performs the logic necessary to make changes 
                 whosTurnItIs().incrementWins()
                 gamePlay.newRound()
                 gamePlay.roundCountIncrement()
+                gameDisplay.renderScoreCounter()
                 evaluateGameWin()
+
                 return;
             }
         }
@@ -193,7 +196,24 @@ const gameDisplay = (function(){ // Controls the elements and rendering of the g
             }
         }
     }
-    return { renderBoard } ;
+
+    function renderScoreCounter() {
+        player1 = document.getElementById('p1-score') ;
+        player2 = document.getElementById('p2-score') ;
+
+        if (gamePlay.players[0].getWins() > 0) {
+            player1.innerText = `Player 1: ${gamePlay.players[0].getWins()}`
+        } else {
+            player1.innerText = `Player 1: `
+        }
+        if (gamePlay.players[1].getWins() > 0) {
+            player2.innerText = `Player 2: ${gamePlay.players[1].getWins()}`
+        }else {
+            player2.innerText = `Player 2: `
+        }
+    }
+
+    return { renderBoard, renderScoreCounter } ;
 })() ;
 
 gameDisplay.renderBoard()
