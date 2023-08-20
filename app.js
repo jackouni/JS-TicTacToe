@@ -50,8 +50,8 @@ const gamePlay = (function(){ // Stores the current state of the game.
 
     function newGame() {
         console.log('gamePlay.newGame() invoked')
-        players = [] ; 
-        _roundCount = 1 ;
+        _roundCount = 0 ;
+        while (players.length !== 0) players.pop() ; 
         newRound() ; 
     }
 
@@ -107,12 +107,17 @@ const gameLogic = (function() { // Performs the logic necessary to make changes 
 
     function evaluateGameWin() {
         console.log('evaluateGameWin() invoked')
-        if (gamePlay.getRoundCount() === 3 || gamePlay.players[0].getWins() === 2 || gamePlay.players[1].getWins() === 2) {            
-            if (gamePlay.players[0].getWins() > gamePlay.players[1].getWins()) {
-                console.log("Player 1 wins the game!")
+        let player1 = gamePlay.players[0] ;
+        let player2 = gamePlay.players[1] ;
+
+        if (gamePlay.getRoundCount() === 3 || player1.getWins() === 2 || player2.getWins() === 2) {            
+            if (player1.getWins() > player2.getWins()) {
+                console.log(`${player1.getName()} wins the game!`)
+                gameDisplay.renderWinMessage(player1.getName())
                 gamePlay.newGame()
-            } else if (gamePlay.players[0].getWins() < gamePlay.players[1].getWins()) {
-                console.log("Player 2 wins the game!")
+            } else if (player1.getWins() < player2.getWins()) {
+                console.log(`${player2.getName()} wins the game!`)
+                gameDisplay.renderWinMessage(player2.getName())
                 gamePlay.newGame()
             } else {
                 console.log("Tie Game... No on wins, no one loses.")
@@ -206,14 +211,23 @@ const gameDisplay = (function(){ // Controls the elements and rendering of the g
         } else {
             player1.innerText = `Player 1: `
         }
+
         if (gamePlay.players[1].getWins() > 0) {
             player2.innerText = `Player 2: ${gamePlay.players[1].getWins()}`
-        }else {
+        } else {
             player2.innerText = `Player 2: `
         }
     }
 
-    return { renderBoard, renderScoreCounter } ;
+    function renderWinMessage(winner) {
+        document.getElementById('main-game').style.display = 'none'
+
+        let scoreMsgCard = document.getElementById('end-game-card')
+        scoreMsgCard.style.display = 'block'
+        document.getElementById('score-msg').innerText = `${winner} WON THE GAME!`
+    }
+
+    return { renderBoard, renderScoreCounter, renderWinMessage } ;
 })() ;
 
 gameDisplay.renderBoard()
@@ -221,4 +235,9 @@ gameDisplay.renderBoard()
 document.querySelector('form').addEventListener('submit', function(event) {
     event.preventDefault()
     gameLogic.createPlayer()
+})
+
+document.getElementById('play-again-btn').addEventListener('click', function(event) {
+    document.getElementById('main-game').style.display = 'flex'
+    document.getElementById('end-game-card').style.display = 'none'
 })

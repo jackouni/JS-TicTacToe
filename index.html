@@ -31,12 +31,19 @@
     </header>
 
     <main>
-        <div id="board"> </div>
+        <div id="main-game">
+            <div id="board"> </div>
 
-        <div id="score-keeper">
-            <h1 id="score-title"> <u>Scores</u> </h1>
-            <h2 class="score-counters" id="p1-score">Player 1:  </h2>
-            <h2 class="score-counters" id="p2-score">Player 2:  </h2>
+            <div id="score-container">
+                <h1 id="score-title"> <u>Scores</u> </h1>
+                <h2 class="score-counters" id="p1-score">Player 1:  </h2>
+                <h2 class="score-counters" id="p2-score">Player 2:  </h2>
+            </div>
+        </div>
+
+        <div id="end-game-card">
+            <h1 id="score-msg" ></h1>
+            <button id="play-again-btn">Play again?</button>
         </div>
     </main>
 
