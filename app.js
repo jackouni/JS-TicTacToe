@@ -29,6 +29,10 @@ const gamePlay = (function(){ // Stores the current state of the game.
         return _roundCount
     }
 
+    function getPlayers() {
+        return players
+    }
+
     function newRound() {
         board = [
             ['', '', ''],
@@ -56,7 +60,7 @@ const gamePlay = (function(){ // Stores the current state of the game.
     }
 
     return { 
-        board, getBoard, players, newRound, changeBoard, newGame,
+        board, getBoard, players, getPlayers, newRound, changeBoard, newGame,
         getTurnCount, getRoundCount, roundCountIncrement, turnCountIncrement
     }
 })() ;
@@ -76,14 +80,14 @@ const gameLogic = (function() { // Performs the logic necessary to make changes 
     }
 
     function createPlayer() {
-        if (gamePlay.players.length < 2) { // Makes sure we don't create more then 2 players
+        if (gamePlay.getPlayers().length < 2) { // Makes sure we don't create more then 2 players
             let name = document.getElementById('name').value;
             let marker = document.querySelector('input[name="marker"]:checked').value;
             let newPlayer = _Player(name, marker) ; 
-            gamePlay.players.push(newPlayer)
+            gamePlay.getPlayers().push(newPlayer)
             console.log('new player created')
 
-            if (gamePlay.players.length === 1) { // Re-renders the form for player 2 (1st marker taken = no more options)
+            if (gamePlay.getPlayers().length === 1) { // Re-renders the form for player 2 (1st marker taken = no more options)
                 // re-renderForm() for player 2
                 console.log('re-rendering form')
             } else {
@@ -96,10 +100,10 @@ const gameLogic = (function() { // Performs the logic necessary to make changes 
     function whosTurnItIs() { // Logic to figure out which player's turn it is. Alternates who goes first by round
         let playerTurn = null
         if (gamePlay.getRoundCount() === 1 || gamePlay.getRoundCount() === 3) {
-            gamePlay.getTurnCount() % 2 === 0 ? playerTurn = gamePlay.players[1] : playerTurn = gamePlay.players[0] ;
+            gamePlay.getTurnCount() % 2 === 0 ? playerTurn = gamePlay.getPlayers()[1] : playerTurn = gamePlay.getPlayers()[0] ;
             return playerTurn
         } else {
-            gamePlay.getTurnCount() % 2 === 0 ? playerTurn = gamePlay.players[0] : playerTurn = gamePlay.players[1] ;
+            gamePlay.getTurnCount() % 2 === 0 ? playerTurn = gamePlay.getPlayers()[0] : playerTurn = gamePlay.getPlayers()[1] ;
             return playerTurn
         }
 
@@ -107,8 +111,8 @@ const gameLogic = (function() { // Performs the logic necessary to make changes 
 
     function evaluateGameWin() {
         console.log('evaluateGameWin() invoked')
-        let player1 = gamePlay.players[0] ;
-        let player2 = gamePlay.players[1] ;
+        let player1 = gamePlay.getPlayers()[0] ;
+        let player2 = gamePlay.getPlayers()[1] ;
 
         if (gamePlay.getRoundCount() === 3 || player1.getWins() === 2 || player2.getWins() === 2) {            
             if (player1.getWins() > player2.getWins()) {
@@ -206,14 +210,20 @@ const gameDisplay = (function(){ // Controls the elements and rendering of the g
         player1 = document.getElementById('p1-score') ;
         player2 = document.getElementById('p2-score') ;
 
-        if (gamePlay.players[0].getWins() > 0) {
-            player1.innerText = `Player 1: ${gamePlay.players[0].getWins()}`
+        if (gamePlay.getPlayers().length === 0) {
+            player1.innerText = `Player 1: `
+            player2.innerText = `Player 2: `
+            return
+        }
+
+        if (gamePlay.getPlayers()[0].getWins() > 0) {
+            player1.innerText = `Player 1: ${gamePlay.getPlayers()[0].getWins()}`
         } else {
             player1.innerText = `Player 1: `
         }
 
-        if (gamePlay.players[1].getWins() > 0) {
-            player2.innerText = `Player 2: ${gamePlay.players[1].getWins()}`
+        if (gamePlay.getPlayers()[1].getWins() > 0) {
+            player2.innerText = `Player 2: ${gamePlay.getPlayers()[1].getWins()}`
         } else {
             player2.innerText = `Player 2: `
         }
@@ -240,4 +250,5 @@ document.querySelector('form').addEventListener('submit', function(event) {
 document.getElementById('play-again-btn').addEventListener('click', function(event) {
     document.getElementById('main-game').style.display = 'flex'
     document.getElementById('end-game-card').style.display = 'none'
+    gameDisplay.renderScoreCounter()
 })
