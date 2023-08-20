@@ -1,6 +1,6 @@
-const gamePlay = (function(){ // Controls the flow of events and stores the state of the game.
+const gamePlay = (function(){ // Stores the current state of the game.
 
-    let _turnCount = 1 ; // What turn is the round on?
+    let _turnCount = 0 ; // How many turns have been taken?
     let _roundCount = 1 ; // What round is the game on?
 
     let board = [
@@ -11,8 +11,19 @@ const gamePlay = (function(){ // Controls the flow of events and stores the stat
 
     let players = [] ; 
 
-    function getBoard() {
-        return board
+    function turnCountIncrement() {
+        console.log(`Turn count incremented from 👉 ${_turnCount}` )
+        _turnCount += 1
+        console.log(`to 👉 ${_turnCount}`)
+    }
+    function roundCountIncrement() {
+        _roundCount++
+    }
+    function getTurnCount() {
+        return _turnCount
+    }
+    function getRoundCount() {
+        return _roundCount
     }
 
     function newRound() {
@@ -21,15 +32,23 @@ const gamePlay = (function(){ // Controls the flow of events and stores the stat
             ['', '', ''],
             ['', '', '']
         ] ;
-        
+        _turnCount = 0 ; 
         gameDisplay.renderBoard()
+        console.log('gamePlay.newRound() invoked')
     }
 
-    function newGame() {
-
+    function getBoard() {
+        return board
     }
 
-    return { board, getBoard, players, _turnCount, _roundCount, newRound, newGame }
+    function changeBoard(row, column, marker) {
+        board[row][column] = `${marker}`
+    }
+
+    return { 
+        board, getBoard, players, newRound, changeBoard,
+        getTurnCount, getRoundCount, roundCountIncrement, turnCountIncrement
+    }
 })() ;
 
 
@@ -37,11 +56,13 @@ const gamePlay = (function(){ // Controls the flow of events and stores the stat
 const gameLogic = (function() { // Performs the logic necessary to make changes to the game.
 
     const _Player = function(name, marker) {
+        let wins = 0 ;
         function getName() { return name } ; 
         function getMarker() { return marker } ;
-        let wins = 0 ;
+        function getWins() { return wins }
+        function incrementWins() { wins++ }
     
-        return { getName, getMarker, wins } ;
+        return { getName, getMarker, getWins, incrementWins } ;
     }
 
     function createPlayer() {
@@ -64,7 +85,7 @@ const gameLogic = (function() { // Performs the logic necessary to make changes 
     function whosTurnItIs() {
         let playerTurn = null
 
-        gamePlay._turnCount % 2 === 0 ? playerTurn = gamePlay.players[1] : playerTurn = gamePlay.players[0] ;
+        gamePlay.getTurnCount() % 2 === 0 ? playerTurn = gamePlay.players[1] : playerTurn = gamePlay.players[0] ;
         return playerTurn
     }
 
@@ -82,23 +103,25 @@ const gameLogic = (function() { // Performs the logic necessary to make changes 
             ]
          } ;
 
-         if (gamePlay._turnCount === 10) {
-            gamePlay.newRound()
-            return 
-         }
-
          for (let i = 0 ; i < getWinningPositions().length ; i++) {
-            if (getWinningPositions()[i].join() == [ "X", "X", "X" ].join()){
-                console.log('Player X wins') ;
-                whosTurnItIs().wins += 1 ;
-                break
-            }
-            if (getWinningPositions()[i].join() == ["O", "O", "O"].join()) {
-                console.log('Player O wins') ;
-                whosTurnItIs().wins += 1 ;
-                break
+            if (getWinningPositions()[i].join() === [ "X", "X", "X" ].join()){
+                console.log('Player X wins the round') ;
+                whosTurnItIs().incrementWins()
+                gamePlay.newRound()
+                return;
+            } else if (getWinningPositions()[i].join() === ["O", "O", "O"].join()) {
+                console.log('Player O wins the round') ;
+                whosTurnItIs().incrementWins()
+                gamePlay.newRound()
+                return;
             }
         }
+        gamePlay.turnCountIncrement()
+        if (gamePlay.getTurnCount() === 9) {
+            console.log('tie game')
+            gamePlay.newRound()
+            return; 
+         }
     }
 
     return { createPlayer, whosTurnItIs, evaluateRoundWin  }
@@ -123,8 +146,7 @@ const gameDisplay = (function(){ // Controls the elements and rendering of the g
                 boardTile.addEventListener('click', function(event) {
                     if (event.target.innerText === '') {
                         event.target.innerText = gameLogic.whosTurnItIs().getMarker()
-                        gamePlay.board[event.target.row][event.target.column] = gameLogic.whosTurnItIs().getMarker()
-                        gamePlay._turnCount++
+                        gamePlay.changeBoard(row, column, gameLogic.whosTurnItIs().getMarker())
                         gameLogic.evaluateRoundWin()
                     }
                 }) ;
@@ -142,6 +164,3 @@ document.querySelector('form').addEventListener('submit', function(event) {
     event.preventDefault()
     gameLogic.createPlayer()
 })
-
-
-
