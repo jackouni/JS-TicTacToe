@@ -50,6 +50,7 @@ const gamePlay = (function(){ // Stores the current state of the game.
     function newGame() {
         console.log('gamePlay.newGame() invoked')
         _roundCount = 0 ;
+        gameDisplay.renderScoreCounter()
         while (players.length !== 0) players.pop() ; 
         gameDisplay.renderForm(true, '') 
     }
