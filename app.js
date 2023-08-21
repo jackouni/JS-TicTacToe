@@ -32,6 +32,10 @@ const gamePlay = (function(){ // Stores the current state of the game.
         return board
     }
 
+    function resetPlayers() {
+        while (players.length !== 0) players.pop() ; 
+    }
+
     function changeBoard(row, column, marker) {
         board[row][column] = `${marker}`
     }
@@ -51,13 +55,13 @@ const gamePlay = (function(){ // Stores the current state of the game.
         console.log('gamePlay.newGame() invoked')
         _roundCount = 0 ;
         gameDisplay.renderScoreCounter()
-        while (players.length !== 0) players.pop() ; 
+        resetPlayers()
         gameDisplay.renderForm(true, '') 
     }
 
     return { 
         board, getBoard, players, getPlayers, newRound, changeBoard, newGame,
-        getTurnCount, getRoundCount, roundCountIncrement, turnCountIncrement
+        getTurnCount, getRoundCount, roundCountIncrement, turnCountIncrement, resetPlayers
     }
 })() ;
 
@@ -125,14 +129,15 @@ const gameLogic = (function() { // Performs the logic necessary to make changes 
             if (player1.getWins() > player2.getWins()) {
                 console.log(`${player1.getName()} wins the game!`)
                 gameDisplay.renderWinMessage(player1.getName())
-                gamePlay.newGame()
+                gamePlay.resetPlayers()
             } else if (player1.getWins() < player2.getWins()) {
                 console.log(`${player2.getName()} wins the game!`)
                 gameDisplay.renderWinMessage(player2.getName())
-                gamePlay.newGame()
+                gamePlay.resetPlayers()
             } else {
                 console.log("Tie Game... No on wins, no one loses.")
                 gameDisplay.renderTieGameMessage()
+                gamePlay.resetPlayers()
             }
         }
     }
