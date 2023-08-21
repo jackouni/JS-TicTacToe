@@ -48,19 +48,19 @@ const gamePlay = (function(){ // Stores the current state of the game.
         ] ;
         _turnCount = 0 ; 
         gameDisplay.renderBoard()
+        gameDisplay.renderScoreCounter()
         console.log('gamePlay.newRound() invoked')
     }
 
     function newGame() {
         console.log('gamePlay.newGame() invoked')
         _roundCount = 0 ;
-        gameDisplay.renderScoreCounter()
         resetPlayers()
         gameDisplay.renderForm(true, '') 
     }
 
     return { 
-        board, getBoard, players, getPlayers, newRound, changeBoard, newGame,
+        board, getBoard, getPlayers, newRound, changeBoard, newGame,
         getTurnCount, getRoundCount, roundCountIncrement, turnCountIncrement, resetPlayers
     }
 })() ;
@@ -177,6 +177,7 @@ const gameLogic = (function() { // Performs the logic necessary to make changes 
             }
         }
         gamePlay.turnCountIncrement()
+
         if (gamePlay.getTurnCount() === 9) {
             console.log('tie game')
             gamePlay.newRound()
@@ -222,23 +223,26 @@ const gameDisplay = (function(){ // Controls the elements and rendering of the g
     function renderScoreCounter() {
         player1 = document.getElementById('p1-score') ;
         player2 = document.getElementById('p2-score') ;
+        player1Name = gamePlay.getPlayers()[0].getName() ;
+        player2Name = gamePlay.getPlayers()[1].getName() ;
+
 
         if (gamePlay.getPlayers().length === 0) {
-            player1.innerText = `Player 1: `
-            player2.innerText = `Player 2: `
+            player1.innerText = `${player1Name} : `
+            player2.innerText = `${player2Name} : `
             return
-        }
-
-        if (gamePlay.getPlayers()[0].getWins() > 0) {
-            player1.innerText = `Player 1: ${gamePlay.getPlayers()[0].getWins()}`
         } else {
-            player1.innerText = `Player 1: `
-        }
+            if (gamePlay.getPlayers()[0].getWins() > 0) {
+                player1.innerText = `${player1Name} : ${gamePlay.getPlayers()[0].getWins()}`
+            } else {
+                player1.innerText = `${player1Name} : `
+            }
 
-        if (gamePlay.getPlayers()[1].getWins() > 0) {
-            player2.innerText = `Player 2: ${gamePlay.getPlayers()[1].getWins()}`
-        } else {
-            player2.innerText = `Player 2: `
+            if (gamePlay.getPlayers()[1].getWins() > 0) {
+                player2.innerText = `${player2Name} : ${gamePlay.getPlayers()[1].getWins()}`
+            } else {
+                player2.innerText = `${player2Name} : `
+            }
         }
     }
 
@@ -247,7 +251,7 @@ const gameDisplay = (function(){ // Controls the elements and rendering of the g
     function renderWinMessage(winner) {
         document.getElementById('main-game').style.display = 'none'
         document.getElementById('end-game-card').style.display = 'flex'
-        document.getElementById('score-msg').innerText = `${winner} \n WON THE GAME!`
+        document.getElementById('score-msg').innerText = `${winner.toUpperCase()} - WINS THE GAME!`
     }
 
     function renderTieGameMessage() {
