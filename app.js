@@ -12,15 +12,10 @@ const gamePlay = (function(){ // Stores the current state of the game.
     let players = [] ; 
 
     function turnCountIncrement() {
-        console.log(`Turn count incremented from 👉 ${_turnCount}` )
         _turnCount += 1
-        console.log(`to 👉 ${_turnCount}`)
     }
     function roundCountIncrement() {
-        console.log(`Round count incremented from 👉 ${_roundCount}` )
         _roundCount += 1
-        console.log(`to 👉 ${_roundCount}`)
-        console.log('New round started...')
     }
     function getTurnCount() {
         return _turnCount
@@ -31,6 +26,14 @@ const gamePlay = (function(){ // Stores the current state of the game.
 
     function getPlayers() {
         return players
+    }
+
+    function getBoard() {
+        return board
+    }
+
+    function changeBoard(row, column, marker) {
+        board[row][column] = `${marker}`
     }
 
     function newRound() {
@@ -44,19 +47,11 @@ const gamePlay = (function(){ // Stores the current state of the game.
         console.log('gamePlay.newRound() invoked')
     }
 
-    function getBoard() {
-        return board
-    }
-
-    function changeBoard(row, column, marker) {
-        board[row][column] = `${marker}`
-    }
-
     function newGame() {
         console.log('gamePlay.newGame() invoked')
         _roundCount = 0 ;
         while (players.length !== 0) players.pop() ; 
-        newRound() ; 
+        gameDisplay.renderForm(true, '') 
     }
 
     return { 
@@ -81,23 +76,34 @@ const gameLogic = (function() { // Performs the logic necessary to make changes 
 
     function createPlayer() {
         if (gamePlay.getPlayers().length < 2) { // Makes sure we don't create more then 2 players
-            let name = document.getElementById('name').value;
-            let marker = document.querySelector('input[name="marker"]:checked').value;
-            let newPlayer = _Player(name, marker) ; 
-            gamePlay.getPlayers().push(newPlayer)
-            console.log('new player created')
-
-            if (gamePlay.getPlayers().length === 1) { // Re-renders the form for player 2 (1st marker taken = no more options)
-                // re-renderForm() for player 2
-                console.log('re-rendering form')
+            if (gamePlay.getPlayers().length === 0){ // Is it the 1st or 2nd player??
+                let name = document.getElementById('name').value;
+                let marker = document.querySelector('input[name="marker"]:checked').value;
+                let newPlayer = _Player(name, marker) ; 
+                gamePlay.getPlayers().push(newPlayer)
+                console.log('new player created')
             } else {
-                console.log('removing form') // removes form entirely and commences the game
+                let name = document.getElementById('name').value;
+                let player1Marker = gamePlay.getPlayers()[0].getMarker()
+                let marker = null
+                player1Marker === 'X' ? marker = 'O' : marker = 'X' ; 
+                let newPlayer = _Player(name, marker) ; 
+                gamePlay.getPlayers().push(newPlayer)
+                console.log('new player created')
             }
 
-        } else console.log('error')
+            if (gamePlay.getPlayers().length === 1) { // Logic for re-rendering the form for Player 2 and removing form
+                console.log('re-rendering form')
+                let player1Marker = gamePlay.getPlayers()[0].getMarker()
+                let marker = null
+                player1Marker === 'X' ? marker = 'O' : marker = 'X' ; 
+                gameDisplay.renderForm(false, marker)
+            } else gameDisplay.removeForm()
+
+        } else console.log('ERROR: Only 2 players can be created.')
     }
 
-    function whosTurnItIs() { // Logic to figure out which player's turn it is. Alternates who goes first by round
+    function whosTurnItIs() { // Logic to figure out which player's turn it is (alternates who goes 1st each round)
         let playerTurn = null
         if (gamePlay.getRoundCount() === 1 || gamePlay.getRoundCount() === 3) {
             gamePlay.getTurnCount() % 2 === 0 ? playerTurn = gamePlay.getPlayers()[1] : playerTurn = gamePlay.getPlayers()[0] ;
@@ -109,7 +115,7 @@ const gameLogic = (function() { // Performs the logic necessary to make changes 
 
     }
 
-    function evaluateGameWin() {
+    function evaluateGameWin() { // Evaluate if the game is over - Someone wins or it's a tie
         console.log('evaluateGameWin() invoked')
         let player1 = gamePlay.getPlayers()[0] ;
         let player2 = gamePlay.getPlayers()[1] ;
@@ -125,7 +131,7 @@ const gameLogic = (function() { // Performs the logic necessary to make changes 
                 gamePlay.newGame()
             } else {
                 console.log("Tie Game... No on wins, no one loses.")
-                gamePlay.newGame()
+                gameDisplay.renderTieGameMessage()
             }
         }
     }
@@ -183,6 +189,7 @@ const gameDisplay = (function(){ // Controls the elements and rendering of the g
 
     function renderBoard() {
         let board = document.getElementById('board') ;
+        document.getElementById('main-game').style.display = 'flex'
         document.querySelectorAll('.board-tile').forEach(tile => tile.remove()) ;
 
         for (let row = 0 ; row < gamePlay.getBoard().length ; row++ ) {
@@ -229,26 +236,53 @@ const gameDisplay = (function(){ // Controls the elements and rendering of the g
         }
     }
 
+    const removeMainGame = () => document.getElementById('main-game').style.display = 'none'
+
     function renderWinMessage(winner) {
         document.getElementById('main-game').style.display = 'none'
-
-        let scoreMsgCard = document.getElementById('end-game-card')
-        scoreMsgCard.style.display = 'block'
-        document.getElementById('score-msg').innerText = `${winner} WON THE GAME!`
+        document.getElementById('end-game-card').style.display = 'flex'
+        document.getElementById('score-msg').innerText = `${winner} \n WON THE GAME!`
     }
 
-    return { renderBoard, renderScoreCounter, renderWinMessage } ;
-})() ;
+    function renderTieGameMessage() {
+        document.getElementById('main-game').style.display = 'none'
+        document.getElementById('end-game-card').style.display = 'flex'
+        document.getElementById('score-msg').innerText = "TIE GAME"
+    }
 
-gameDisplay.renderBoard()
+    const removeWinMessage = () => document.getElementById('end-game-card').style.display = 'none'
+
+    function renderForm(player1Form, marker) {
+        if ( player1Form ) { // Is this the form for player 1 or 2??
+            document.getElementById('start-game-card').style.display = 'flex'
+            document.getElementById('marker-container').style.display = 'flex'
+            document.getElementById('player2-marker-msg').style.display = 'none'
+            document.getElementById('player2-marker-msg').innerText = 'Player 2, your marker is'
+        } else {
+            document.getElementById('marker-container').style.display = 'none'
+            document.getElementById('player2-marker-msg').style.display = 'block'
+            document.getElementById('player2-marker-msg').innerText += ` ${marker}`
+        }
+    }
+    
+    function removeForm() { 
+        document.getElementById('start-game-card').style.display = 'none' 
+        document.getElementById('main-game').style.display = 'flex'
+        gamePlay.newRound() ;
+    }
+
+    return { renderBoard, renderScoreCounter, renderWinMessage, renderForm, removeForm, removeWinMessage, removeMainGame, renderTieGameMessage } ;
+})() ;
 
 document.querySelector('form').addEventListener('submit', function(event) {
     event.preventDefault()
     gameLogic.createPlayer()
 })
 
-document.getElementById('play-again-btn').addEventListener('click', function(event) {
-    document.getElementById('main-game').style.display = 'flex'
-    document.getElementById('end-game-card').style.display = 'none'
-    gameDisplay.renderScoreCounter()
+document.getElementById('play-again-btn').addEventListener('click', () => {
+    gameDisplay.removeWinMessage()
+    gamePlay.newGame()
 })
+
+
+gamePlay.newGame()

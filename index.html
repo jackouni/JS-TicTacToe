@@ -9,29 +9,34 @@
 </head>
 <body>
     <header>
-        <form id="form" action="">
-            <div id="name-container">
-                <label for="name" >Enter your name:</label>
-                <input type="text" id="name" required>
-            </div>
 
-            <div id="marker-container">
-                <h2>Choose your marker:</h2>
-                <div id="marker-options">
-                    <label for="marker-x">X
-                        <input type="radio" id="marker-x" name="marker" value="X" required>
-                    </label>
-                    <label for="marker-o">O
-                        <input type="radio" id="marker-o" name="marker" value="O">
-                    </label>
-                </div>
-            </div>
-            <button id="submit-btn" type="submit">SUBMIT</button>
-        </form>
     </header>
 
     <main>
-        <div id="main-game">
+        <div id="start-game-card">
+            <form id="form" action="">
+                <div id="name-container">
+                    <label for="name" >Enter your name:</label>
+                    <input type="text" id="name" required>
+                </div>
+    
+                <div id="marker-container">
+                    <h2>Choose your marker:</h2>
+                    <div id="marker-options">
+                        <label for="marker-x">X
+                            <input type="radio" id="marker-x" name="marker" value="X" required>
+                        </label>
+                        <label for="marker-o">O
+                            <input type="radio" id="marker-o" name="marker" value="O">
+                        </label>
+                    </div>
+                </div>
+                <div id="player2-marker-msg">Player 2, your marker is</div>
+                <button id="submit-btn" type="submit">SUBMIT</button>
+            </form>
+        </div>
+
+        <div id="main-game" style="display: none;">
             <div id="board"> </div>
 
             <div id="score-container">
