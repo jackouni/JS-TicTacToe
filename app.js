@@ -258,21 +258,29 @@ const gameDisplay = (function(){ // Controls the elements and rendering of the g
 
     function renderWinMessage(winner) {
         document.getElementById('main-game').style.display = 'none'
+        document.getElementById('main-game').setAttribute('open', 'false')
         document.getElementById('end-game-card').style.display = 'flex'
+        document.getElementById('end-game-card').setAttribute('open', 'true')
         document.getElementById('score-msg').innerText = `${winner.toUpperCase()} - WINS THE GAME!`
     }
 
     function renderTieGameMessage() {
         document.getElementById('main-game').style.display = 'none'
+        document.getElementById('main-game').setAttribute('open', 'false')
         document.getElementById('end-game-card').style.display = 'flex'
+        document.getElementById('end-game-card').setAttribute('open', 'true')
         document.getElementById('score-msg').innerText = "TIE GAME"
     }
 
-    const removeWinMessage = () => document.getElementById('end-game-card').style.display = 'none'
+    const removeWinMessage = () => {
+        document.getElementById('end-game-card').style.display = 'none'
+        document.getElementById('end-game-card').setAttribute('open', 'false')
+    }
 
     function renderForm(player1Form, marker) {
         if ( player1Form ) { // Is this the form for player 1 or 2??
             document.getElementById('start-game-card').style.display = 'flex'
+            document.getElementById('start-game-card').setAttribute('open', 'true')
             document.getElementById('marker-container').style.display = 'flex'
             document.getElementById('player2-marker-msg').style.display = 'none'
             document.getElementById('player2-marker-msg').innerText = 'Player 2, your marker is'
@@ -285,6 +293,8 @@ const gameDisplay = (function(){ // Controls the elements and rendering of the g
     
     function removeForm() { 
         document.getElementById('start-game-card').style.display = 'none' 
+        document.getElementById('start-game-card').setAttribute('open', 'false')
+        document.getElementById('main-game').setAttribute('open', 'true')
         document.getElementById('main-game').style.display = 'flex'
         gamePlay.newRound() ;
     }

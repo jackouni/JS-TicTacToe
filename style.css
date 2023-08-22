@@ -60,6 +60,29 @@
     --padding-global: 20px;
 }
 
+@keyframes fade-in-up {
+  0% {
+    opacity: 0 ; 
+    transform: translateY(100px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0px);
+  }
+}
+
+@keyframes fade-out-down {
+  0% {
+    opacity: 1 ; 
+    transform: translateY(0px);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-100px) scale(0.8);
+  }
+}
+
+
 body {
     display: flex;
     flex-direction: column;
@@ -67,6 +90,7 @@ body {
     gap: 10%;
     width: 100vw ; 
     height: 100vh ; 
+    background-color: rgb(255, 241, 220);
 }
 
 header {
@@ -85,8 +109,9 @@ main {
     justify-content: center;
     gap: 10%;
     width: 100% ;
-    height: auto;
+    height: 100%;
     min-height: 190px;
+    padding: 5%;
 }
 
 
@@ -98,6 +123,7 @@ main {
 .card {
     border-radius: var(--border-corner);
     box-shadow: var(--shadows);
+    background-color: white;
 }
 
 #start-game-card {
@@ -106,7 +132,7 @@ main {
     align-items: center;
 
     width: 50%;
-    height: 100%;
+    height: 50%;
 }
 
 form {
@@ -138,6 +164,7 @@ form {
 #main-game {
     display: flex;
     justify-content: center;
+    align-items: center;
     gap: var(--margin-global);
     width: 100%;
     height: 100%;
@@ -157,6 +184,7 @@ form {
     border-radius: var(--border-corner);
     box-shadow: var(--shadows);
     margin: var(--margin-global);
+    background-color: white;
 }
 
 .board-tile {
@@ -177,6 +205,7 @@ form {
     box-shadow: var(--shadows);
     margin: var(--margin-global);
     min-height: 280px;
+    background-color: white;
 }
 
 .score-counters {
@@ -197,4 +226,15 @@ form {
 
 #score-msg {
     align-self: center;
+}
+
+.card[open], #main-game[open] {
+  animation: fade-in-up 500ms, forwards;
+}
+
+hr {
+  align-self: flex-start;
+  width: 80%;
+  height: 2px;
+  background-color: rgba(0, 0, 0, 0.474);
 }
