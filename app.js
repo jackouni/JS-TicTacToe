@@ -283,7 +283,7 @@ const gameDisplay = (function(){ // Controls the elements and rendering of the g
             document.getElementById('start-game-card').setAttribute('open', 'true')
             document.getElementById('marker-container').style.display = 'flex'
             document.getElementById('player2-marker-msg').style.display = 'none'
-            document.getElementById('player2-marker-msg').innerText = 'Player 2, your marker is'
+            document.getElementById('player2-marker-msg').innerText = 'Player 2, your marker is 👉 '
         } else {
             document.getElementById('marker-container').style.display = 'none'
             document.getElementById('player2-marker-msg').style.display = 'block'

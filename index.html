@@ -13,7 +13,7 @@
             <form id="form" action="">
                 <div id="name-container">
                     <label for="name" >Enter your name:</label>
-                    <input type="text" id="name" required>
+                    <input type="text" id="name" maxlength="10" minlength="1" required>
                 </div>
     
                 <div id="marker-container">
@@ -27,7 +27,7 @@
                         </label>
                     </div>
                 </div>
-                <div id="player2-marker-msg">Player 2, your marker is</div>
+                <div id="player2-marker-msg">Player 2, your marker is 👉</div>
                 <button id="submit-btn" type="submit">SUBMIT</button>
             </form>
         </div>
@@ -40,7 +40,7 @@
                 <h2 class="score-counters" id="p1-score">Player 1:  </h2>
                 <hr>
                 <h2 class="score-counters" id="p2-score">Player 2:  </h2>
-                <br>
+                <hr>
                 <br>
                 <h2 id="whos-turn">Player 1's turn</h2>
             </div>

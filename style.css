@@ -60,6 +60,11 @@
     --padding-global: 20px;
 }
 
+@font-face {
+  font-family: orange-juice;
+  src: url('orange-juice-font/orange-juice2.0.ttf');
+}
+
 @keyframes fade-in-up {
   0% {
     opacity: 0 ; 
@@ -87,6 +92,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
+    font-family: orange-juice, monospace, Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
     gap: 10%;
     width: 100vw ; 
     height: 100vh ; 
@@ -145,6 +151,10 @@ form {
     height: 100%;
 }
 
+label {
+  font-size: 24px;
+}
+
 #marker-container {
     display: flex;
     flex-direction: column;
@@ -199,7 +209,7 @@ form {
     flex-direction: column;
     align-items: center;
     gap: 25px;
-    width: 300px;
+    min-width: 300px;
     padding:20px;
     border-radius: var(--border-corner);
     box-shadow: var(--shadows);
@@ -237,4 +247,19 @@ hr {
   width: 80%;
   height: 2px;
   background-color: rgba(0, 0, 0, 0.474);
+}
+
+button {
+  width: 25%;
+  height: 10%;
+  color: black;
+  border:none;
+  border-radius: var(--border-corner);
+  box-shadow: var(--shadows);
+  background-color: rgb(255, 241, 220);
+  transition: 0.25s;
+}
+
+button:hover {
+  scale: 1.05;
 }
