@@ -54,8 +54,10 @@
  /*----- PROJECT -------*/
 /*---------------------*/
 :root {
-    --shadows: 0 2px 8px rgba(0, 0, 0, 0.1), 0 4px 2px rgba(0, 0, 0, 0.058);
+    --shadows: 0 2px 8px rgba(0, 0, 0, 0.41), 0 4px 2px rgba(0, 0, 0, 0.39);
     --border-corner: 10px;
+    --margin-global: 20px;
+    --padding-global: 20px;
 }
 
 body {
@@ -70,8 +72,12 @@ body {
 header {
     display: flex;
     justify-content: center;
+    align-items: center;
     width: 100% ;
-    height: 15%;
+    height: 20%;
+    color: white;
+    background-color: black;
+    border-bottom: double white 4px;
 }
 
 main {
@@ -79,20 +85,9 @@ main {
     justify-content: center;
     gap: 10%;
     width: 100% ;
-    height: 70%;
+    height: auto;
+    min-height: 190px;
 }
-
-footer {
-    width: 100% ;
-    height: 15%;
-}
-
-
-
-
-  /*---------------------*/
- /*----- HEADER --------*/
-/*---------------------*/
 
 
 
@@ -143,7 +138,7 @@ form {
 #main-game {
     display: flex;
     justify-content: center;
-    gap: 10%;
+    gap: var(--margin-global);
     width: 100%;
     height: 100%;
 }
@@ -154,9 +149,14 @@ form {
     grid-template-rows: repeat(3, 1fr);
     justify-items: center;
     align-items: center;
-    width: 50%;
-    height: 100%;
-    outline: solid black 4px;
+    padding: 50px;
+    max-width: 450px;
+    min-width: 450px;
+    max-height: 450px;
+    min-height: 450px;
+    border-radius: var(--border-corner);
+    box-shadow: var(--shadows);
+    margin: var(--margin-global);
 }
 
 .board-tile {
@@ -164,10 +164,23 @@ form {
     text-align: center;
     height: 100%;
     width: 100%;
-    border: solid black 2px;
+}
+
+#score-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 25px;
+    width: 300px;
+    padding:20px;
+    border-radius: var(--border-corner);
+    box-shadow: var(--shadows);
+    margin: var(--margin-global);
+    min-height: 280px;
 }
 
 .score-counters {
+    align-self: flex-start;
     text-align: start;
 }
 
@@ -185,10 +198,3 @@ form {
 #score-msg {
     align-self: center;
 }
-
-
-
-
-  /*---------------------*/
- /*----- FOOTER --------*/
-/*---------------------*/

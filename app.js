@@ -206,6 +206,13 @@ const gameDisplay = (function(){ // Controls the elements and rendering of the g
                 boardTile.innerText = gamePlay.getBoard()[row][column] ; 
                 boardTile.row = row
                 boardTile.column = column
+                if (boardTile.row === 0 || boardTile.row === 1) {
+                    boardTile.style.borderBottom = 'solid black 2px'
+                }
+                if (boardTile.column === 1) {
+                    boardTile.style.borderRight = 'solid black 2px'
+                    boardTile.style.borderLeft = 'solid black 2px'
+                }
 
                 boardTile.addEventListener('click', function(event) {
                     if (event.target.innerText === '') {
@@ -228,8 +235,6 @@ const gameDisplay = (function(){ // Controls the elements and rendering of the g
 
 
         if (gamePlay.getPlayers().length === 0) {
-            player1.innerText = `${player1Name} : `
-            player2.innerText = `${player2Name} : `
             return
         } else {
             if (gamePlay.getPlayers()[0].getWins() > 0) {
@@ -243,6 +248,9 @@ const gameDisplay = (function(){ // Controls the elements and rendering of the g
             } else {
                 player2.innerText = `${player2Name} : `
             }
+
+            let playersTurn = gameLogic.whosTurnItIs().getName()
+            document.getElementById('whos-turn').innerText = `${playersTurn}'s turn...`
         }
     }
 
