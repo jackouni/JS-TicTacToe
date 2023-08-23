@@ -49,6 +49,7 @@ const gamePlay = (function(){ // Stores the current state of the game.
         _turnCount = 0 ; 
         gameDisplay.renderBoard()
         gameDisplay.renderScoreCounter()
+        gameDisplay.renderWhosTurnItIs()
         console.log('gamePlay.newRound() invoked')
     }
 
@@ -219,6 +220,7 @@ const gameDisplay = (function(){ // Controls the elements and rendering of the g
                         event.target.innerText = gameLogic.whosTurnItIs().getMarker()
                         gamePlay.changeBoard(row, column, gameLogic.whosTurnItIs().getMarker())
                         gameLogic.evaluateRoundWin()
+                        renderWhosTurnItIs()
                     }
                 }) ;
 
@@ -249,9 +251,12 @@ const gameDisplay = (function(){ // Controls the elements and rendering of the g
                 player2.innerText = `${player2Name} : `
             }
 
-            let playersTurn = gameLogic.whosTurnItIs().getName()
-            document.getElementById('whos-turn').innerText = `${playersTurn}'s turn...`
         }
+    }
+
+    function renderWhosTurnItIs() {
+        playersTurn = gameLogic.whosTurnItIs().getName()
+        document.getElementById('whos-turn').innerText = `${playersTurn}'s turn...`
     }
 
     const removeMainGame = () => document.getElementById('main-game').style.display = 'none'
@@ -299,7 +304,9 @@ const gameDisplay = (function(){ // Controls the elements and rendering of the g
         gamePlay.newRound() ;
     }
 
-    return { renderBoard, renderScoreCounter, renderWinMessage, renderForm, removeForm, removeWinMessage, removeMainGame, renderTieGameMessage } ;
+    return { renderBoard, renderScoreCounter, renderWinMessage, renderForm,
+         removeForm, removeWinMessage, removeMainGame, renderTieGameMessage, renderWhosTurnItIs
+        } ;
 })() ;
 
 document.querySelector('form').addEventListener('submit', function(event) {
