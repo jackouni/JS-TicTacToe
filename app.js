@@ -11,34 +11,46 @@ const gamePlay = (function(){ // Stores the current state of the game.
 
     let players = [] ; 
 
+
     function turnCountIncrement() {
         _turnCount += 1
     }
+
+
     function roundCountIncrement() {
         _roundCount += 1
     }
+
+
     function getTurnCount() {
         return _turnCount
     }
+
+
     function getRoundCount() {
         return _roundCount
     }
+
 
     function getPlayers() {
         return players
     }
 
+
     function getBoard() {
         return board
     }
+
 
     function resetPlayers() {
         while (players.length !== 0) players.pop() ; 
     }
 
+
     function changeBoard(row, column, marker) {
         board[row][column] = `${marker}`
     }
+
 
     function newRound() {
         board = [
@@ -53,6 +65,7 @@ const gamePlay = (function(){ // Stores the current state of the game.
         console.log('gamePlay.newRound() invoked')
     }
 
+
     function newGame() {
         console.log('gamePlay.newGame() invoked')
         _roundCount = 0 ;
@@ -60,8 +73,9 @@ const gamePlay = (function(){ // Stores the current state of the game.
         gameDisplay.renderForm(true, '') 
     }
 
+
     return { 
-        board, getBoard, getPlayers, newRound, changeBoard, newGame,
+        getBoard, getPlayers, newRound, changeBoard, newGame,
         getTurnCount, getRoundCount, roundCountIncrement, turnCountIncrement, resetPlayers
     }
 })() ;
@@ -79,6 +93,7 @@ const gameLogic = (function() { // Performs the logic necessary to make changes 
     
         return { getName, getMarker, getWins, incrementWins } ;
     }
+
 
     function createPlayer() {
         if (gamePlay.getPlayers().length < 2) { // Makes sure we don't create more then 2 players
@@ -109,6 +124,7 @@ const gameLogic = (function() { // Performs the logic necessary to make changes 
         } else console.log('ERROR: Only 2 players can be created.')
     }
 
+
     function whosTurnItIs() { // Logic to figure out which player's turn it is (alternates who goes 1st each round)
         let playerTurn = null
         if (gamePlay.getRoundCount() === 1 || gamePlay.getRoundCount() === 3) {
@@ -121,27 +137,25 @@ const gameLogic = (function() { // Performs the logic necessary to make changes 
 
     }
 
+
     function evaluateGameWin() { // Evaluate if the game is over - Someone wins or it's a tie
-        console.log('evaluateGameWin() invoked')
         let player1 = gamePlay.getPlayers()[0] ;
         let player2 = gamePlay.getPlayers()[1] ;
 
         if (gamePlay.getRoundCount() === 3 || player1.getWins() === 2 || player2.getWins() === 2) {            
             if (player1.getWins() > player2.getWins()) {
-                console.log(`${player1.getName()} wins the game!`)
                 gameDisplay.renderWinMessage(player1.getName())
                 gamePlay.resetPlayers()
             } else if (player1.getWins() < player2.getWins()) {
-                console.log(`${player2.getName()} wins the game!`)
                 gameDisplay.renderWinMessage(player2.getName())
                 gamePlay.resetPlayers()
             } else {
-                console.log("Tie Game... No on wins, no one loses.")
                 gameDisplay.renderTieGameMessage()
                 gamePlay.resetPlayers()
             }
         }
     }
+
 
     function evaluateRoundWin() {
         function getWinningPositions() { // Retrieves the specific win positions from current board.
@@ -179,14 +193,14 @@ const gameLogic = (function() { // Performs the logic necessary to make changes 
         }
         gamePlay.turnCountIncrement()
 
-        if (gamePlay.getTurnCount() === 9) {
-            console.log('tie game')
+        if (gamePlay.getTurnCount() === 9) { // If all moves have been made with no winning positions.
             gamePlay.newRound()
             gamePlay.roundCountIncrement()
             evaluateGameWin()
             return; 
          }
     }
+
 
     return { createPlayer, whosTurnItIs, evaluateRoundWin }
 })() ; 
@@ -229,12 +243,12 @@ const gameDisplay = (function(){ // Controls the elements and rendering of the g
         }
     }
 
+
     function renderScoreCounter() {
         player1 = document.getElementById('p1-score') ;
         player2 = document.getElementById('p2-score') ;
         player1Name = gamePlay.getPlayers()[0].getName() ;
         player2Name = gamePlay.getPlayers()[1].getName() ;
-
 
         if (gamePlay.getPlayers().length === 0) {
             return
@@ -254,12 +268,17 @@ const gameDisplay = (function(){ // Controls the elements and rendering of the g
         }
     }
 
+
     function renderWhosTurnItIs() {
         playersTurn = gameLogic.whosTurnItIs().getName()
         document.getElementById('whos-turn').innerText = `${playersTurn}'s turn...`
     }
 
-    const removeMainGame = () => document.getElementById('main-game').style.display = 'none'
+
+    function removeMainGame(){
+        document.getElementById('main-game').style.display = 'none'
+    }
+
 
     function renderWinMessage(winner) {
         document.getElementById('main-game').style.display = 'none'
@@ -269,6 +288,7 @@ const gameDisplay = (function(){ // Controls the elements and rendering of the g
         document.getElementById('score-msg').innerText = `${winner.toUpperCase()} - WINS THE GAME!`
     }
 
+
     function renderTieGameMessage() {
         document.getElementById('main-game').style.display = 'none'
         document.getElementById('main-game').setAttribute('open', 'false')
@@ -277,10 +297,12 @@ const gameDisplay = (function(){ // Controls the elements and rendering of the g
         document.getElementById('score-msg').innerText = "TIE GAME"
     }
 
+
     const removeWinMessage = () => {
         document.getElementById('end-game-card').style.display = 'none'
         document.getElementById('end-game-card').setAttribute('open', 'false')
     }
+
 
     function renderForm(player1Form, marker) {
         if ( player1Form ) { // Is this the form for player 1 or 2??
@@ -296,6 +318,7 @@ const gameDisplay = (function(){ // Controls the elements and rendering of the g
         }
     }
     
+
     function removeForm() { 
         document.getElementById('start-game-card').style.display = 'none' 
         document.getElementById('start-game-card').setAttribute('open', 'false')
@@ -304,11 +327,15 @@ const gameDisplay = (function(){ // Controls the elements and rendering of the g
         gamePlay.newRound() ;
     }
 
+
     return { renderBoard, renderScoreCounter, renderWinMessage, renderForm,
          removeForm, removeWinMessage, removeMainGame, renderTieGameMessage, renderWhosTurnItIs
         } ;
 })() ;
 
+
+
+// Event Listeners:
 document.querySelector('form').addEventListener('submit', function(event) {
     event.preventDefault()
     gameLogic.createPlayer()
@@ -320,4 +347,6 @@ document.getElementById('play-again-btn').addEventListener('click', () => {
 })
 
 
+
+// Initialize Game:
 gamePlay.newGame()
